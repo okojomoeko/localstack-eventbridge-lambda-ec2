@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`SQS Queue and SNS Topic Created 1`] = `
+exports[`Snapshot test 1`] = `
 {
   "Parameters": {
     "BootstrapVersion": {
@@ -8,71 +8,456 @@ exports[`SQS Queue and SNS Topic Created 1`] = `
       "Description": "Version of the CDK Bootstrap resources in this environment, automatically retrieved from SSM Parameter Store. [cdk:skip]",
       "Type": "AWS::SSM::Parameter::Value<String>",
     },
+    "SsmParameterValueawsserviceamiamazonlinuxlatestamzn2amihvmx8664gp2C96584B6F00A464EAD1953AFF4B05118Parameter": {
+      "Default": "/aws/service/ami-amazon-linux-latest/amzn2-ami-hvm-x86_64-gp2",
+      "Type": "AWS::SSM::Parameter::Value<AWS::EC2::Image::Id>",
+    },
   },
   "Resources": {
-    "AwsCdkProjectTemplateQueue96EC2A4C": {
-      "DeletionPolicy": "Delete",
-      "Properties": {
-        "VisibilityTimeout": 300,
-      },
-      "Type": "AWS::SQS::Queue",
-      "UpdateReplacePolicy": "Delete",
-    },
-    "AwsCdkProjectTemplateQueueMyTestStackAwsCdkProjectTemplateTopicFED9FDCC8B1D3C9F": {
+    "SampleEC243038771": {
       "DependsOn": [
-        "AwsCdkProjectTemplateQueuePolicyB1E310F7",
+        "SampleEC2InstanceRole349DA0CB",
       ],
       "Properties": {
-        "Endpoint": {
-          "Fn::GetAtt": [
-            "AwsCdkProjectTemplateQueue96EC2A4C",
-            "Arn",
+        "AvailabilityZone": {
+          "Fn::Select": [
+            0,
+            {
+              "Fn::GetAZs": "",
+            },
           ],
         },
-        "Protocol": "sqs",
-        "TopicArn": {
-          "Ref": "AwsCdkProjectTemplateTopic340E5805",
+        "IamInstanceProfile": {
+          "Ref": "SampleEC2InstanceProfile59E07FDB",
+        },
+        "ImageId": {
+          "Ref": "SsmParameterValueawsserviceamiamazonlinuxlatestamzn2amihvmx8664gp2C96584B6F00A464EAD1953AFF4B05118Parameter",
+        },
+        "InstanceType": "t3.nano",
+        "SecurityGroupIds": [
+          {
+            "Fn::GetAtt": [
+              "SampleEC2InstanceSecurityGroup839B849B",
+              "GroupId",
+            ],
+          },
+        ],
+        "SubnetId": {
+          "Ref": "SampleEC2VPCPublicSubnetSubnet1Subnet651716FD",
+        },
+        "Tags": [
+          {
+            "Key": "Name",
+            "Value": "MyTestStack/SampleEC2/SampleEC2",
+          },
+        ],
+        "UserData": {
+          "Fn::Base64": "#!/bin/bash",
         },
       },
-      "Type": "AWS::SNS::Subscription",
+      "Type": "AWS::EC2::Instance",
     },
-    "AwsCdkProjectTemplateQueuePolicyB1E310F7": {
+    "SampleEC2InstanceProfile59E07FDB": {
       "Properties": {
-        "PolicyDocument": {
+        "Roles": [
+          {
+            "Ref": "SampleEC2InstanceRole349DA0CB",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::InstanceProfile",
+    },
+    "SampleEC2InstanceRole349DA0CB": {
+      "Properties": {
+        "AssumeRolePolicyDocument": {
           "Statement": [
             {
-              "Action": "sqs:SendMessage",
-              "Condition": {
-                "ArnEquals": {
-                  "aws:SourceArn": {
-                    "Ref": "AwsCdkProjectTemplateTopic340E5805",
-                  },
-                },
-              },
+              "Action": "sts:AssumeRole",
               "Effect": "Allow",
               "Principal": {
-                "Service": "sns.amazonaws.com",
-              },
-              "Resource": {
-                "Fn::GetAtt": [
-                  "AwsCdkProjectTemplateQueue96EC2A4C",
-                  "Arn",
-                ],
+                "Service": "ec2.amazonaws.com",
               },
             },
           ],
           "Version": "2012-10-17",
         },
-        "Queues": [
+        "Tags": [
           {
-            "Ref": "AwsCdkProjectTemplateQueue96EC2A4C",
+            "Key": "Name",
+            "Value": "MyTestStack/SampleEC2/SampleEC2",
           },
         ],
       },
-      "Type": "AWS::SQS::QueuePolicy",
+      "Type": "AWS::IAM::Role",
     },
-    "AwsCdkProjectTemplateTopic340E5805": {
-      "Type": "AWS::SNS::Topic",
+    "SampleEC2InstanceSecurityGroup839B849B": {
+      "Properties": {
+        "GroupDescription": "MyTestStack/SampleEC2/SampleEC2/InstanceSecurityGroup",
+        "SecurityGroupEgress": [
+          {
+            "CidrIp": "0.0.0.0/0",
+            "Description": "Allow all outbound traffic by default",
+            "IpProtocol": "-1",
+          },
+        ],
+        "Tags": [
+          {
+            "Key": "Name",
+            "Value": "MyTestStack/SampleEC2/SampleEC2",
+          },
+        ],
+        "VpcId": {
+          "Ref": "SampleEC2VPCF44F6120",
+        },
+      },
+      "Type": "AWS::EC2::SecurityGroup",
+    },
+    "SampleEC2VPCF44F6120": {
+      "Properties": {
+        "CidrBlock": "10.0.0.0/16",
+        "EnableDnsHostnames": true,
+        "EnableDnsSupport": true,
+        "InstanceTenancy": "default",
+        "Tags": [
+          {
+            "Key": "Name",
+            "Value": "MyTestStack/SampleEC2/VPC",
+          },
+        ],
+      },
+      "Type": "AWS::EC2::VPC",
+    },
+    "SampleEC2VPCIGWA2B7A9F3": {
+      "Properties": {
+        "Tags": [
+          {
+            "Key": "Name",
+            "Value": "MyTestStack/SampleEC2/VPC",
+          },
+        ],
+      },
+      "Type": "AWS::EC2::InternetGateway",
+    },
+    "SampleEC2VPCPublicSubnetSubnet1DefaultRouteD64FB370": {
+      "DependsOn": [
+        "SampleEC2VPCVPCGW87075A7C",
+      ],
+      "Properties": {
+        "DestinationCidrBlock": "0.0.0.0/0",
+        "GatewayId": {
+          "Ref": "SampleEC2VPCIGWA2B7A9F3",
+        },
+        "RouteTableId": {
+          "Ref": "SampleEC2VPCPublicSubnetSubnet1RouteTable57E376BC",
+        },
+      },
+      "Type": "AWS::EC2::Route",
+    },
+    "SampleEC2VPCPublicSubnetSubnet1RouteTable57E376BC": {
+      "Properties": {
+        "Tags": [
+          {
+            "Key": "Name",
+            "Value": "MyTestStack/SampleEC2/VPC/PublicSubnetSubnet1",
+          },
+        ],
+        "VpcId": {
+          "Ref": "SampleEC2VPCF44F6120",
+        },
+      },
+      "Type": "AWS::EC2::RouteTable",
+    },
+    "SampleEC2VPCPublicSubnetSubnet1RouteTableAssociation0A0BE4EF": {
+      "Properties": {
+        "RouteTableId": {
+          "Ref": "SampleEC2VPCPublicSubnetSubnet1RouteTable57E376BC",
+        },
+        "SubnetId": {
+          "Ref": "SampleEC2VPCPublicSubnetSubnet1Subnet651716FD",
+        },
+      },
+      "Type": "AWS::EC2::SubnetRouteTableAssociation",
+    },
+    "SampleEC2VPCPublicSubnetSubnet1Subnet651716FD": {
+      "Properties": {
+        "AvailabilityZone": {
+          "Fn::Select": [
+            0,
+            {
+              "Fn::GetAZs": "",
+            },
+          ],
+        },
+        "CidrBlock": "10.0.0.0/16",
+        "MapPublicIpOnLaunch": true,
+        "Tags": [
+          {
+            "Key": "aws-cdk:subnet-name",
+            "Value": "PublicSubnet",
+          },
+          {
+            "Key": "aws-cdk:subnet-type",
+            "Value": "Public",
+          },
+          {
+            "Key": "Name",
+            "Value": "MyTestStack/SampleEC2/VPC/PublicSubnetSubnet1",
+          },
+        ],
+        "VpcId": {
+          "Ref": "SampleEC2VPCF44F6120",
+        },
+      },
+      "Type": "AWS::EC2::Subnet",
+    },
+    "SampleEC2VPCVPCGW87075A7C": {
+      "Properties": {
+        "InternetGatewayId": {
+          "Ref": "SampleEC2VPCIGWA2B7A9F3",
+        },
+        "VpcId": {
+          "Ref": "SampleEC2VPCF44F6120",
+        },
+      },
+      "Type": "AWS::EC2::VPCGatewayAttachment",
+    },
+    "ScheduledStartStopEC2EC2StartEvent2518C7CF": {
+      "Properties": {
+        "ScheduleExpression": "cron(0/2 * * * ? *)",
+        "State": "ENABLED",
+        "Targets": [
+          {
+            "Arn": {
+              "Fn::GetAtt": [
+                "ScheduledStartStopEC2StartEC2Lambda896098AC",
+                "Arn",
+              ],
+            },
+            "Id": "Target0",
+          },
+        ],
+      },
+      "Type": "AWS::Events::Rule",
+    },
+    "ScheduledStartStopEC2EC2StartEventAllowEventRuleMyTestStackScheduledStartStopEC2StartEC2Lambda8357FB5330670E68": {
+      "Properties": {
+        "Action": "lambda:InvokeFunction",
+        "FunctionName": {
+          "Fn::GetAtt": [
+            "ScheduledStartStopEC2StartEC2Lambda896098AC",
+            "Arn",
+          ],
+        },
+        "Principal": "events.amazonaws.com",
+        "SourceArn": {
+          "Fn::GetAtt": [
+            "ScheduledStartStopEC2EC2StartEvent2518C7CF",
+            "Arn",
+          ],
+        },
+      },
+      "Type": "AWS::Lambda::Permission",
+    },
+    "ScheduledStartStopEC2EC2StopEvent1CF6ECA1": {
+      "Properties": {
+        "ScheduleExpression": "cron(1/2 * * * ? *)",
+        "State": "ENABLED",
+        "Targets": [
+          {
+            "Arn": {
+              "Fn::GetAtt": [
+                "ScheduledStartStopEC2StopEC2LambdaB82BC7B0",
+                "Arn",
+              ],
+            },
+            "Id": "Target0",
+          },
+        ],
+      },
+      "Type": "AWS::Events::Rule",
+    },
+    "ScheduledStartStopEC2EC2StopEventAllowEventRuleMyTestStackScheduledStartStopEC2StopEC2LambdaB536C9E720F2EEAD": {
+      "Properties": {
+        "Action": "lambda:InvokeFunction",
+        "FunctionName": {
+          "Fn::GetAtt": [
+            "ScheduledStartStopEC2StopEC2LambdaB82BC7B0",
+            "Arn",
+          ],
+        },
+        "Principal": "events.amazonaws.com",
+        "SourceArn": {
+          "Fn::GetAtt": [
+            "ScheduledStartStopEC2EC2StopEvent1CF6ECA1",
+            "Arn",
+          ],
+        },
+      },
+      "Type": "AWS::Lambda::Permission",
+    },
+    "ScheduledStartStopEC2StartEC2Lambda896098AC": {
+      "DependsOn": [
+        "ScheduledStartStopEC2StartEC2LambdaServiceRoleDefaultPolicyF0561FE0",
+        "ScheduledStartStopEC2StartEC2LambdaServiceRole4CBFA4C9",
+      ],
+      "Properties": {
+        "Code": {
+          "S3Bucket": {
+            "Fn::Sub": "cdk-hnb659fds-assets-\${AWS::AccountId}-\${AWS::Region}",
+          },
+          "S3Key": "aecd7c4d20ea2e32da66de56148b8b6abec782319fdb72e50fd5d1314c6b0d95.zip",
+        },
+        "Environment": {
+          "Variables": {
+            "EC2_INSTANCE_ID": {
+              "Ref": "SampleEC243038771",
+            },
+          },
+        },
+        "Handler": "start_ec2.lambda_handler",
+        "Role": {
+          "Fn::GetAtt": [
+            "ScheduledStartStopEC2StartEC2LambdaServiceRole4CBFA4C9",
+            "Arn",
+          ],
+        },
+        "Runtime": "python3.10",
+      },
+      "Type": "AWS::Lambda::Function",
+    },
+    "ScheduledStartStopEC2StartEC2LambdaServiceRole4CBFA4C9": {
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Statement": [
+            {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": {
+                "Service": "lambda.amazonaws.com",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "ManagedPolicyArns": [
+          {
+            "Fn::Join": [
+              "",
+              [
+                "arn:",
+                {
+                  "Ref": "AWS::Partition",
+                },
+                ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole",
+              ],
+            ],
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Role",
+    },
+    "ScheduledStartStopEC2StartEC2LambdaServiceRoleDefaultPolicyF0561FE0": {
+      "Properties": {
+        "PolicyDocument": {
+          "Statement": [
+            {
+              "Action": "ec2:Start*",
+              "Effect": "Allow",
+              "Resource": "*",
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "PolicyName": "ScheduledStartStopEC2StartEC2LambdaServiceRoleDefaultPolicyF0561FE0",
+        "Roles": [
+          {
+            "Ref": "ScheduledStartStopEC2StartEC2LambdaServiceRole4CBFA4C9",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Policy",
+    },
+    "ScheduledStartStopEC2StopEC2LambdaB82BC7B0": {
+      "DependsOn": [
+        "ScheduledStartStopEC2StopEC2LambdaServiceRoleDefaultPolicy80FEB5B5",
+        "ScheduledStartStopEC2StopEC2LambdaServiceRole2581D890",
+      ],
+      "Properties": {
+        "Code": {
+          "S3Bucket": {
+            "Fn::Sub": "cdk-hnb659fds-assets-\${AWS::AccountId}-\${AWS::Region}",
+          },
+          "S3Key": "aecd7c4d20ea2e32da66de56148b8b6abec782319fdb72e50fd5d1314c6b0d95.zip",
+        },
+        "Environment": {
+          "Variables": {
+            "EC2_INSTANCE_ID": {
+              "Ref": "SampleEC243038771",
+            },
+          },
+        },
+        "Handler": "stop_ec2.lambda_handler",
+        "Role": {
+          "Fn::GetAtt": [
+            "ScheduledStartStopEC2StopEC2LambdaServiceRole2581D890",
+            "Arn",
+          ],
+        },
+        "Runtime": "python3.10",
+      },
+      "Type": "AWS::Lambda::Function",
+    },
+    "ScheduledStartStopEC2StopEC2LambdaServiceRole2581D890": {
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Statement": [
+            {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": {
+                "Service": "lambda.amazonaws.com",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "ManagedPolicyArns": [
+          {
+            "Fn::Join": [
+              "",
+              [
+                "arn:",
+                {
+                  "Ref": "AWS::Partition",
+                },
+                ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole",
+              ],
+            ],
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Role",
+    },
+    "ScheduledStartStopEC2StopEC2LambdaServiceRoleDefaultPolicy80FEB5B5": {
+      "Properties": {
+        "PolicyDocument": {
+          "Statement": [
+            {
+              "Action": "ec2:Stop*",
+              "Effect": "Allow",
+              "Resource": "*",
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "PolicyName": "ScheduledStartStopEC2StopEC2LambdaServiceRoleDefaultPolicy80FEB5B5",
+        "Roles": [
+          {
+            "Ref": "ScheduledStartStopEC2StopEC2LambdaServiceRole2581D890",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Policy",
     },
   },
   "Rules": {
