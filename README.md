@@ -1,13 +1,10 @@
-# aws-cdk-project-template
+# localstack-eventbridge-lambda-ec2
 
-AWS CDKのプロジェクトテンプレート。下記ツールを導入。
+[こちら](https://github.com/okojomoeko/aws-cdk-project-template)のテンプレートから作成した。
 
-- eslint
-- prettier
-- lint-staged
-- husky
+localstackを使って、aws cdkの練習を行う。
 
----
+詳細な内容は[zennの記事](https://zenn.dev/okojomoeko/articles/localstack-eventbridge-lambda-ec2)
 
 ##
 
