@@ -7,13 +7,12 @@ export class SampleEC2 extends Construct {
   constructor(scope: Construct, id: string) {
     super(scope, id);
     // わかりやすくAZは1つで今回試す
-    // localstackのfree版の都合で、Private Subnet配置のEC2については対象外
     this.vpc = new ec2.Vpc(this, 'VPC', {
       maxAzs: 1,
       subnetConfiguration: [
         {
-          subnetType: ec2.SubnetType.PUBLIC,
-          name: 'PublicSubnet',
+          subnetType: ec2.SubnetType.PRIVATE_ISOLATED,
+          name: 'Isolated Subnet',
         },
       ],
     });
@@ -21,12 +20,15 @@ export class SampleEC2 extends Construct {
     this.instance = new ec2.Instance(this, 'SampleEC2', {
       vpc: this.vpc,
       instanceType: ec2.InstanceType.of(
-        ec2.InstanceClass.T3,
+        ec2.InstanceClass.T4G,
         ec2.InstanceSize.NANO,
       ),
-      machineImage: new ec2.AmazonLinuxImage({
-        generation: ec2.AmazonLinuxGeneration.AMAZON_LINUX_2,
+      machineImage: ec2.MachineImage.latestAmazonLinux2023({
+        cpuType: ec2.AmazonLinuxCpuType.ARM_64,
       }),
+    });
+    this.vpc.addInterfaceEndpoint('Ec2endpoint', {
+      service: ec2.InterfaceVpcEndpointAwsService.EC2,
     });
   }
 }
